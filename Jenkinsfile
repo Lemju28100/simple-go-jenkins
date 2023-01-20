@@ -21,7 +21,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                'sh cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=staging"'
+                sh 'cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=staging"'
             }
         }
         stage('Deploy to Production') {
@@ -34,7 +34,7 @@ pipeline {
                     string(defaultValue: 'No', description: 'Are you sure you want to deploy to production?', name: 'confirm')
                 ])
 
-                'sh cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=production"'
+                sh 'cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=production"'
             }
         }
     }
