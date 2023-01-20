@@ -17,6 +17,7 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh 'go build -o ./dist/go-app'
+                sh 'pwd'
             }
         }
         stage('Test') {
