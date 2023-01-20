@@ -25,6 +25,20 @@
       owner: jenkins
       group: jenkins
       mode: 0755
+  - name: Copy index.html from local to remote
+    copy:
+      src: "{{ workdir }}/index.html"
+      dest: /app/index.html
+      owner: jenkins
+      group: jenkins
+      mode: 0755
+  - name: Copy the assets folder from local to remote
+    copy:
+      src: "{{ workdir }}/assets"
+      dest: /app/assets
+      owner: jenkins
+      group: jenkins
+      mode: 0755
   - name: expose go app port 3000
     firewalld:
       port: 3000/tcp
