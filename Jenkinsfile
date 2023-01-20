@@ -43,10 +43,12 @@ pipeline {
                 sh 'ansible-playbook -i hosts main.yml --extra-vars "env=production"'
             }
         }
-        post {
+
+    }
+
+    post {
             always {
                 cleanWs()
             }
         }
-    }
 }
