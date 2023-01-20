@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+        stage('Clean Workspace') {
+            steps {
+                echo 'Cleaning Workspace...'
+                cleanWs()
+            }
+        }
         stage('Generate Modules') {
             steps {
                 echo 'Building...'
