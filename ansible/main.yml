@@ -2,13 +2,10 @@
 
 - name: Install and run go app on servers
   vars:
-    env: "{{ lookup('env', 'ENV') }}"
+    env: "staging"
   hosts: "{{ env }}"
   become: yes
   tasks:
-  - name: print out host name
-    debug:
-      msg: "Running on host: {{ env }}"
   - name: Copy go app from local to remote
     copy:
       src: go-app
