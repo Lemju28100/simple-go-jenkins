@@ -33,6 +33,7 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file.")
+		os.Setenv("PORT", "3000")
 	}
 
 	// Get the port from the environment variable
