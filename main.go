@@ -48,7 +48,7 @@ func main() {
 	// Handle the static files using the file server
 	assetsPath := "/app/assets/"
 	if _, err := os.Stat(assetsPath); os.IsNotExist(err) {
-		log.Println("Error loading assets folder.")
+		log.Println("Error loading assets folderr.")
 		assetsPath = "/assets/"
 	}
 
