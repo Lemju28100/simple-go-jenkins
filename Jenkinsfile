@@ -4,13 +4,13 @@ pipeline {
         stage('Generate Modules') {
             steps {
                 echo 'Building...'
-                sh 'cd $WORKSPACE/go-app && go mod init go-app'
+                sh 'go mod init go-app'
             }
         }
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh 'cd $WORKSPACE/go-app && go build -o ./dist/go-app'
+                sh 'go build -o ./dist/go-app'
             }
         }
         stage('Test') {
@@ -21,7 +21,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                sh 'cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=staging"'
+                sh 'ansible-playbook -i hosts main.yml --extra-vars "env=staging"'
             }
         }
         stage('Deploy to Production') {
@@ -34,7 +34,7 @@ pipeline {
                     string(defaultValue: 'No', description: 'Are you sure you want to deploy to production?', name: 'confirm')
                 ])
 
-                sh 'cd $WORKSPACE/go-app/ansible && ansible-playbook -i hosts main.yml --extra-vars "env=production"'
+                sh 'ansible-playbook -i hosts main.yml --extra-vars "env=production"'
             }
         }
     }
