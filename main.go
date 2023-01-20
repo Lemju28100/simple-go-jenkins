@@ -48,7 +48,7 @@ func main() {
 	// Handle the static files using the file server
 	assetsPath := "/app/assets/"
 	if _, err := os.Stat(assetsPath); os.IsNotExist(err) {
-		assetsPath = "assets/"
+		assetsPath = "/assets/"
 	}
 
 	mux.Handle(assetsPath, http.StripPrefix(assetsPath, fs))
