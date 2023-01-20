@@ -6,22 +6,37 @@
   hosts: "{{ env }}"
   become: yes
   tasks:
+  - name: Install go
+    yum:
+      name: go
+      state: present
+  - name: Create app directory
+    file:
+      path: /app
+      state: directory
+      owner: jenkins
+      group: jenkins
+      mode: 0755
   - name: Copy go app from local to remote
     copy:
-      src: go-app
-      dest: ../dist/go-app
-      owner: /app/go-app
-      group: ansible
+      src: ./dist/go-app
+      dest: /app/go-app
+      owner: jenkins
+      group: jenkins
       mode: 0755
+  - name: expose go app port 3000
+    firewalld:
+      port: 3000/tcp
+      permanent: yes
+      state: enabled
+      immediate: yes
   - name: Run go app
-    shell: ./go-app
+    shell: /app/go-app
   - name: Check that go app is running
     shell: ps -ef | grep go-app
     register: result
     failed_when: "'go-app' not in result.stdout"
     changed_when: false
-  - name: expose go app port
-    shell: firewall-cmd --zone=public --add-port=3000/tcp --permanent
   - name: Ping localhost to check if go app is running
     uri:
       url: http://localhost:3000
