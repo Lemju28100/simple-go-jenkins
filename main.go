@@ -51,7 +51,7 @@ func main() {
 		assetsPath = "assets/"
 	}
 
-	mux.Handle("/assets/", http.StripPrefix(assetsPath, fs))
+	mux.Handle(assetsPath, http.StripPrefix(assetsPath, fs))
 
 	// Ask the dispatcher to handle the root path
 	mux.HandleFunc("/", indexHandler)
