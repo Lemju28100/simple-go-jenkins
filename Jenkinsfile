@@ -1,12 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Clean Workspace') {
-            steps {
-                echo 'Cleaning Workspace...'
-                cleanWs()
-            }
-        }
         stage('Generate Modules') {
             steps {
                 echo 'Building...'
@@ -47,6 +41,11 @@ pipeline {
                 ])
 
                 sh 'ansible-playbook -i hosts main.yml --extra-vars "env=production"'
+            }
+        }
+        post {
+            always {
+                cleanWs()
             }
         }
     }
