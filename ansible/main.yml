@@ -1,0 +1,29 @@
+# setup staging and production hosts
+
+- name: Install and run go app on servers
+  hosts: {{ env }}
+  become: yes
+  tasks:
+  - name: Copy go app from local to remote
+    copy:
+      src: go-app
+      dest: ../dist/go-app
+      owner: /app/go-app
+      group: ansible
+      mode: 0755
+  - name: Run go app
+    shell: ./go-app
+  - name: Check that go app is running
+    shell: ps -ef | grep go-app
+    register: result
+    failed_when: "'go-app' not in result.stdout"
+    changed_when: false
+  - name: expose go app port
+    shell: firewall-cmd --zone=public --add-port=3000/tcp --permanent
+  - name: Ping localhost to check if go app is running
+    uri:
+      url: http://localhost:3000
+      status_code: 200
+    register: result
+    failed_when: result.status != 200
+    changed_when: false

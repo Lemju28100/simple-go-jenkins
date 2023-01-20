@@ -1,0 +1,9 @@
+.air.toml
+./go-app
+./tmp/*
+tmp
+.env
+.git
+.gitattributes
+go.mod
+go.sum
