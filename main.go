@@ -11,7 +11,14 @@ import (
 )
 
 // Initialize a template page with index.html using html/template package
-var tpl = template.Must(template.ParseFiles("index.html"))
+
+indexPath := "/app/index.html"
+
+if _, err := os.Stat(indexPath); os.IsNotExist(err) {
+	indexPath = "index.html"
+}
+
+var tpl = template.Must(template.ParseFiles(indexPath))
 
 // Create the handler for the root index page
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +45,12 @@ func main() {
 	fs := http.FileServer(http.Dir("assets"))
 
 	// Handle the static files using the file server
-	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	assetsPath := "/app/assets/"
+	if _, err := os.Stat(assetsPath); os.IsNotExist(err) {
+		assetsPath = "assets/"
+	}
+
+	mux.Handle("/assets/", http.StripPrefix(assetsPath, fs))
 
 	// Ask the dispatcher to handle the root path
 	mux.HandleFunc("/", indexHandler)
