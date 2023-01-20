@@ -12,16 +12,16 @@ import (
 
 // Initialize a template page with index.html using html/template package
 
-indexPath := "/app/index.html"
-
-if _, err := os.Stat(indexPath); os.IsNotExist(err) {
-	indexPath = "index.html"
-}
-
+var indexPath = "/app/index.html"
 var tpl = template.Must(template.ParseFiles(indexPath))
 
 // Create the handler for the root index page
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if _, err := os.Stat(indexPath); os.IsNotExist(err) {
+		indexPath = "index.html"
+	}
+
+	tpl = template.Must(template.ParseFiles(indexPath))
 
 	// This template is executed using html/template package
 	tpl.Execute(w, nil)
