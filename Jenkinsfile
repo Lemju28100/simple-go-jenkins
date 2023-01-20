@@ -51,6 +51,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
+                    ssh-add /var/lib/jenkins/.ssh/id_rsa_production && \
                     ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production" --extra-vars "workdir=$WORKSPACE"'
             }
         }
