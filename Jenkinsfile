@@ -34,6 +34,7 @@ pipeline {
                 sh 'ssh-add /var/lib/jenkins/.ssh/id_rsa'
                 sh 'ssh-add /var/lib/jenkins/.ssh/id_rsa_localhost'
                 echo 'SSH prepared'
+            }
         }
         stage('Deploy to Staging') {
             steps {
