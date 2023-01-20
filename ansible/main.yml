@@ -39,6 +39,13 @@
       owner: jenkins
       group: jenkins
       mode: 0755
+  - name: Copy .env file from local to remote
+    copy:
+      src: "{{ workdir }}/.env"
+      dest: /app/.env
+      owner: jenkins
+      group: jenkins
+      mode: 0755
   - name: expose go app port 3000
     firewalld:
       port: 3000/tcp
