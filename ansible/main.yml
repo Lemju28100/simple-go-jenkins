@@ -1,7 +1,7 @@
 # setup staging and production hosts
 
 - name: Install and run go app on servers
-  hosts: {{ env }}
+  hosts: "{{ env }}"
   become: yes
   tasks:
   - name: Copy go app from local to remote
