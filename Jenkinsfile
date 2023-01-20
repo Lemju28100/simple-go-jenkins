@@ -27,7 +27,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                sh 'ansible-playbook -i hosts main.yml --extra-vars "env=staging"'
+                sh 'ansible-playbook -i hosts ansible/main.yml --extra-vars "env=staging"'
             }
         }
         stage('Deploy to Production') {
@@ -40,7 +40,7 @@ pipeline {
                     string(defaultValue: 'No', description: 'Are you sure you want to deploy to production?', name: 'confirm')
                 ])
 
-                sh 'ansible-playbook -i hosts main.yml --extra-vars "env=production"'
+                sh 'ansible-playbook -i hosts ansible/main.yml --extra-vars "env=production"'
             }
         }
 
