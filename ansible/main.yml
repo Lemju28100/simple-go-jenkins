@@ -3,6 +3,7 @@
 - name: Install and run go app on servers
   vars:
     env: "staging"
+    workdir: "/var/lib/jenkins/workspace/simple-go-jenkins-app_main"
   hosts: "{{ env }}"
   become: yes
   tasks:
@@ -19,7 +20,7 @@
       mode: 0755
   - name: Copy go app from local to remote
     copy:
-      src: dist/go-app
+      src: "{{ workdir }}/dist/go-app"
       dest: /app/go-app
       owner: jenkins
       group: jenkins

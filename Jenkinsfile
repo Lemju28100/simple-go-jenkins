@@ -33,7 +33,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging"'
+                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE"'
             }
         }
         stage('Deploy to Production') {
@@ -51,7 +51,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production"'
+                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production" --extra-vars "workdir=$WORKSPACE"'
             }
         }
 
