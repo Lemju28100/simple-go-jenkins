@@ -7,6 +7,12 @@ pipeline {
                 sh 'go mod init go-app'
             }
         }
+        stage('Tidy Modules') {
+            steps {
+                echo 'Testing...'
+                sh 'go mod tidy'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building...'
