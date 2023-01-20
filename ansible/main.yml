@@ -45,14 +45,12 @@
       permanent: yes
       state: enabled
       immediate: yes
-  - name: Run go app
-    shell: /app/go-app
-  - name: Check that go app is running
-    shell: ps -ef | grep go-app
+  - name: Run go app in background
+    shell: nohup /app/go-app > /dev/null 2>&1 &
     register: result
-    failed_when: "'go-app' not in result.stdout"
+    failed_when: result.rc != 0
     changed_when: false
-  - name: Ping localhost to check if go app is running
+  - name: Check that go app is running
     uri:
       url: http://localhost:3000
       status_code: 200
