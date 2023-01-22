@@ -29,7 +29,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE --extra-vars "commit=${env.BUILD_NUMBER}"'
+                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE" --extra-vars "commit=${env.BUILD_NUMBER}"'
             }
         }
         stage('Deploy to Production') {
