@@ -4,7 +4,7 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building..."
-                sh "docker build -t 2464410/simple-go-jenkins:${env.BUILD_NUMBER} ."
+                sh "sudo docker build -t 2464410/simple-go-jenkins:${env.BUILD_NUMBER} ."
             }
         }
 
@@ -13,8 +13,8 @@ pipeline {
             steps {
             withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     echo "Pushing to Docker Hub..."
-                    sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                    sh "docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
+                    sh "sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                    sh "sudo docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
             }
             }
 
@@ -29,7 +29,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE"'
+                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE --extra-vars "commit=${env.BUILD_NUMBER}"'
             }
         }
         stage('Deploy to Production') {
@@ -53,7 +53,7 @@ pipeline {
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
                     ssh-add /var/lib/jenkins/.ssh/id_rsa_production && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production" --extra-vars "workdir=$WORKSPACE"'
+                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production" --extra-vars "workdir=$WORKSPACE" --extra-vars "commit=${env.BUILD_NUMBER}"'
             }
         }
 
