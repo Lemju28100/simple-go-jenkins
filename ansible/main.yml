@@ -75,6 +75,11 @@
         state: enabled
         immediate: yes
 
+    - name: Use pip3 to install docker
+      pip:
+        name: docker
+        executable: pip3
+
     - name: Stop and remove old container
       docker_container:
         name: simple-go-jenkins
