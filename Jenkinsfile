@@ -4,7 +4,7 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building..."
-                sh "sudo docker build -t 2464410/simple-go-jenkins:${env.BUILD_NUMBER} ."
+                sh "docker build -t 2464410/simple-go-jenkins:${env.BUILD_NUMBER} ."
             }
         }
 
@@ -13,8 +13,8 @@ pipeline {
             steps {
             withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     echo "Pushing to Docker Hub..."
-                    sh "sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                    sh "sudo docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
+                    sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                    sh "docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
             }
             }
 

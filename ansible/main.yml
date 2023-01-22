@@ -63,6 +63,16 @@
         groups: docker
         append: yes
 
+    - name: Restart jenkins service
+      systemd:
+        name: jenkins
+        state: restarted
+
+    - name: Start docker service
+      systemd:
+        name: docker
+        state: started
+
     - name: Expose port 3000
       firewalld:
         port: 3000/tcp
