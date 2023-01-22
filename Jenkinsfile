@@ -9,13 +9,16 @@ pipeline {
         }
 
         stage("Push to Docker Hub") {
+
+            steps {
             withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                steps {
                     echo "Pushing to Docker Hub..."
                     sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                     sh "docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
-                }
             }
+            }
+
+
         }
 
         stage('Deploy to Staging') {
