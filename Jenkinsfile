@@ -28,6 +28,7 @@ pipeline {
                     credentialsId: 'StagingPrivateKey',
                     inventory: 'ansible/hosts',
                     playbook: 'ansible/main.yml',
+                    disableHostKeyChecking: true,
                     extraVars: [
                         "env": "staging",
                         "workdir": "${WORKSPACE}",
@@ -57,6 +58,7 @@ pipeline {
                     credentialsId: 'ProductionPrivateKey',
                     inventory: 'ansible/hosts',
                     playbook: 'ansible/main.yml',
+                    disableHostKeyChecking: true,
                     extraVars: [
                         "env": "production",
                         "workdir": "${WORKSPACE}",
