@@ -34,7 +34,10 @@ pipeline {
                         "commit_id": "${env.BUILD_NUMBER}"
                     ]
                 )
+            }
         }
+
+
         stage('Deploy to Production') {
 
             when {
@@ -70,5 +73,4 @@ pipeline {
                 cleanWs()
             }
         }
-}
 }
