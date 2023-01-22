@@ -63,11 +63,6 @@
         groups: docker
         append: yes
 
-    - name: Restart jenkins service
-      systemd:
-        name: jenkins
-        state: restarted
-
     - name: Start docker service
       systemd:
         name: docker
@@ -84,6 +79,7 @@
       docker_container:
         name: simple-go-jenkins
         state: absent
+      ignore_errors: yes
 
     - name: Run new container, expose port 3000 and pull image from docker hub
       docker_container:
