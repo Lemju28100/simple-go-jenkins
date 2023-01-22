@@ -4,5 +4,3 @@
 tmp
 .git
 .gitattributes
-go.mod
-go.sum
