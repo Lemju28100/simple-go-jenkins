@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo 'Deploying to Staging...'
                 ansiblePlaybook(
-                    credentialsId: 'StagingPrivateKey'
+                    credentialsId: 'StagingPrivateKey',
                     inventory: 'ansible/hosts',
                     playbook: 'ansible/main.yml',
                     extraVars: [
@@ -51,7 +51,7 @@ pipeline {
                 ])
 
                 ansiblePlaybook(
-                    credentialsId: 'ProductionPrivateKey'
+                    credentialsId: 'ProductionPrivateKey',
                     inventory: 'ansible/hosts',
                     playbook: 'ansible/main.yml',
                     extraVars: [
