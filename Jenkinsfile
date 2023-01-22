@@ -24,13 +24,15 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                sh 'eval $(ssh-agent) && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_stage && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=staging" --extra-vars "workdir=$WORKSPACE" --extra-vars "commit_id=$env.BUILD_NUMBER"'
-            }
+                ansiblePlaybook(
+                    inventory: 'ansible/hosts',
+                    playbook: 'ansible/main.yml',
+                    extraVars: [
+                        "env": "staging",
+                        "workdir": "${WORKSPACE}",
+                        "commit_id": "${env.BUILD_NUMBER}"
+                    ]
+                )
         }
         stage('Deploy to Production') {
 
@@ -47,13 +49,15 @@ pipeline {
                     string(defaultValue: 'No', description: 'Are you sure you want to deploy to production?', name: 'confirm')
                 ])
 
-                sh 'eval $(ssh-agent) && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_stage && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_staging && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_prod && \
-                    ssh-add /var/lib/jenkins/.ssh/id_rsa_production && \
-                    ansible-playbook -i ansible/hosts ansible/main.yml --extra-vars "env=production" --extra-vars "workdir=$WORKSPACE" --extra-vars "commit_id=${env.BUILD_NUMBER}"'
+                ansiblePlaybook(
+                    inventory: 'ansible/hosts',
+                    playbook: 'ansible/main.yml',
+                    extraVars: [
+                        "env": "production",
+                        "workdir": "${WORKSPACE}",
+                        "commit_id": "${env.BUILD_NUMBER}"
+                    ]
+                )
             }
         }
 

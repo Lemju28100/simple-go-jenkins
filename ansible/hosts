@@ -1,5 +1,5 @@
 [staging]
-44.202.230.14 ansible_user=jenkins
+54.209.183.134 ansible_user=jenkins
 
 [production]
-44.203.204.186 ansible_user=jenkins
+3.93.58.112 ansible_user=jenkins
