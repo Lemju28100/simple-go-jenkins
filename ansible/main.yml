@@ -1,71 +1,85 @@
 # setup staging and production hosts
 
-- name: Install and run go app on servers
-  vars:
-    env: "staging"
-    workdir: "/var/lib/jenkins/workspace/simple-go-jenkins-app_main"
+- name: Setup staging and production hosts
   hosts: "{{ env }}"
   become: yes
   tasks:
-  - name: Install go
-    yum:
-      name: go
-      state: present
-  - name: Create app directory
-    file:
-      path: /app
-      state: directory
-      owner: jenkins
-      group: jenkins
-      mode: 0755
-  - name: Copy go app from local to remote
-    copy:
-      src: "{{ workdir }}/dist/go-app"
-      dest: /app/go-app
-      owner: jenkins
-      group: jenkins
-      mode: 0755
-  - name: Copy index.html from local to remote
-    copy:
-      src: "{{ workdir }}/index.html"
-      dest: /app/index.html
-      owner: jenkins
-      group: jenkins
-      mode: 0755
-  - name: Copy the assets folder from local to remote
-    copy:
-      src: "{{ workdir }}/assets"
-      dest: /app/assets
-      owner: jenkins
-      group: jenkins
-      mode: 0755
-  - name: Copy .env file from local to remote
-    copy:
-      src: "{{ workdir }}/.env"
-      dest: /app/.env
-      owner: jenkins
-      group: jenkins
-      mode: 0755
-  - name: expose go app port 3000
-    firewalld:
-      port: 3000/tcp
-      permanent: yes
-      state: enabled
-      immediate: yes
-  - name: Kill go app if it is running
-    shell: pkill go-app
-    register: result
-    failed_when: result.rc != 0 and result.rc != 1
-    changed_when: false
-  - name: Run go app in background
-    shell: nohup /app/go-app > /dev/null 2>&1 &
-    register: result
-    failed_when: result.rc != 0
-    changed_when: false
-  - name: Check that go app is running
-    uri:
-      url: http://localhost:3000
-      status_code: 200
-    register: result
-    failed_when: result.status != 200
-    changed_when: false
+    - name: Update yum
+      yum:
+        name: '*'
+        state: latest
+        skip_broken: yes
+  
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
+    - name: Install yum utils
+      yum:
+        name: yum-utils
+        state: present
+
+    - name: Add docker-ce repo for centos
+      yum_repository:
+        name: docker-ce
+        description: Docker CE Stable - x86_64
+        baseurl: https://download.docker.com/linux/centos/8/x86_64/stable
+        gpgcheck: yes
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        enabled: yes
+
+    - name: Install docker-ce
+      yum:
+        name: docker-ce
+        state: present
+        allowerasing: yes
+
+    - name: Install docker-ce-cli
+      yum:
+        name: docker-ce-cli
+        state: present
+        allowerasing: yes
+
+    - name: Install containerd.io
+      yum:
+        name: containerd.io
+        state: present
+        allowerasing: yes
+
+    - name: Make docker start on boot
+      systemd:
+        name: docker
+        enabled: yes
+
+    - name: Add docker group
+      group:
+        name: docker
+        state: present
+
+    - name: Add jenkins user to docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    - name: Expose port 3000
+      firewalld:
+        port: 3000/tcp
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Stop and remove old container
+      docker_container:
+        name: simple-go-jenkins
+        state: absent
+
+    - name: Run new container, expose port 3000 and pull image from docker hub
+      docker_container:
+        name: simple-go-jenkins
+        image: "2464410/simple-go-jenkins:{{ commit_id }}"
+        state: started
+        ports:
+          - "3000:3000"
+        restart_policy: always

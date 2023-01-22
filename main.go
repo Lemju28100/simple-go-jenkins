@@ -17,9 +17,6 @@ var tpl = template.Must(template.ParseFiles(indexPath))
 
 // Create the handler for the root index page
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if _, err := os.Stat(indexPath); os.IsNotExist(err) {
-		indexPath = "index.html"
-	}
 
 	tpl = template.Must(template.ParseFiles(indexPath))
 
@@ -43,16 +40,9 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Create a file server to serve static files
-	fs := http.FileServer(http.Dir("assets"))
+	fs := http.FileServer(http.Dir("/app/assets"))
 
-	// Handle the static files using the file server
-	assetsPath := "/app/assets/"
-	if _, err := os.Stat(assetsPath); os.IsNotExist(err) {
-		log.Println("Error loading assets folderr.")
-		assetsPath = "/assets/"
-	}
-
-	mux.Handle(assetsPath, http.StripPrefix(assetsPath, fs))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	// Ask the dispatcher to handle the root path
 	mux.HandleFunc("/", indexHandler)

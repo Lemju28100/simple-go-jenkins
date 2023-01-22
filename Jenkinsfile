@@ -1,30 +1,23 @@
 pipeline {
     agent any
     stages {
-        stage('Generate Modules') {
+        stage("Build") {
             steps {
-                echo 'Building...'
-                sh 'go mod init go-app'
+                echo "Building..."
+                sh "docker build -t 2464410/simple-go-jenkins:${env.BUILD_NUMBER} ."
             }
         }
-        stage('Tidy Modules') {
-            steps {
-                echo 'Testing...'
-                sh 'go mod tidy'
+
+        stage("Push to Docker Hub") {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                steps {
+                    echo "Pushing to Docker Hub..."
+                    sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+                    sh "docker push 2464410/simple-go-jenkins:${env.BUILD_NUMBER}"
+                }
             }
         }
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                sh 'go build -o ./dist/go-app'
-                sh 'pwd'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-            }
-        }
+
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
@@ -37,6 +30,11 @@ pipeline {
             }
         }
         stage('Deploy to Production') {
+
+            when {
+                branch 'master'
+            }
+
             steps {
                 echo 'Deploying to Production...'
 
